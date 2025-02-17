@@ -1,10 +1,19 @@
 "use client";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+
+import { decodeJwt } from "../utils/JwtDecode";
+
 import React, { useState } from "react";
 
 const SignIn = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<boolean | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
+  const router = useRouter();
 
+  let sk:string  = "";
   const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
   };
@@ -13,12 +22,53 @@ const SignIn = () => {
     setPassword(e.target.value);
   };
 
-  const handleButton = (e: React.MouseEvent<HTMLButtonElement , MouseEvent>) => {
+  const handleButton = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.preventDefault();
+
+    try {
+      const response = await axios.post("http://localhost:3005/api/v1/auth", {
+        username: username,
+        password: password,
+      });
+
+      console.log(response.data);
+      setError(false)
+      setSuccess(true);
+
+       sk = response.data;
+      
+       try{
+          const decode = decodeJwt(sk);
+
+          if(decode.role == "ADMIN"){
+            console.log("ADMIN User");
+          }
+
+          console.log(decode);
+       }catch(e : unknown){
+          console.log(e)
+          throw new Error("Erorr!");
+       }
+
+      // router.push("/")
+       
+     } catch (e : unknown ) {
+      setSuccess(false)
+      setError(true)
+      console.log("Error!");
+      console.log(e);
+    }
   };
 
-  console.log(password);
-  console.log(username);
+
+
+  
+  
+
+  //console.log(password);
+  //console.log(username);
 
   return (
     <div className=" h-screen w-screen flex justify-center items-center">
@@ -26,39 +76,43 @@ const SignIn = () => {
         <div className="flex flex-col gap-3 w-[500] shadow-xl p-6 rounded-xl">
           <span className=" text-3xl font-bold mb-3">Sign In</span>
 
-          <div role="alert" className="alert alert-success">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 shrink-0 stroke-current"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>Login Pass!</span>
-          </div>
+          {success && (
+            <div role="alert" className="alert alert-success">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 shrink-0 stroke-current"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>Login Pass!</span>
+            </div>
+          )}
 
-          <div role="alert" className="  alert alert-error">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 shrink-0 stroke-current"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>Invalid Username or Password!</span>
-          </div>
+          {error && (
+            <div role="alert" className="  alert alert-error">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6 shrink-0 stroke-current"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>Invalid Username or Password!</span>
+            </div>
+          )}
 
           <label className="input input-bordered flex items-center gap-2">
             <svg
