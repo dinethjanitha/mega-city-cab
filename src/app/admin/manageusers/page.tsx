@@ -1,3 +1,5 @@
+"use client";
+import WithAuth from "@/app/utils/WithAuth";
 import React from "react";
 
 const ManageUsers = () => {
@@ -43,4 +45,4 @@ const ManageUsers = () => {
   );
 };
 
-export default ManageUsers;
+export default WithAuth(ManageUsers);

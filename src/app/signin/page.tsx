@@ -37,7 +37,9 @@ const SignIn = () => {
       setError(false)
       setSuccess(true);
 
-       sk = response.data;
+      
+      sk = response.data;
+      localStorage.setItem('token' , sk)
       
        try{
           const decode = decodeJwt(sk);
