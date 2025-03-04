@@ -1,3 +1,4 @@
+"use client"
 import { jwtDecode } from 'jwt-decode'
 
 const IsAuth = () => {
@@ -14,6 +15,7 @@ const IsAuth = () => {
         console.log(currentTime);
 
         if(decode.exp == null){
+            // localStorage.setItem('username' , );
             return false;
         }
 

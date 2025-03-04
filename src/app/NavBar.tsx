@@ -1,20 +1,26 @@
 "use client";
-import React from "react";
-import { usePathname } from "next/navigation";
 
+import { usePathname , useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect } from "react";
+import IsAuth from "./utils/IsAuth";
 const NavBar = () => {
   const pathName = usePathname();
 
-  const navbarHide = ['/signup' , '/signin'];
 
-  console.log(pathName)
+  const navbarHide = ["/signup", "/signin"];
 
-  let currunetPath = navbarHide.includes(pathName);
-  console.log(currunetPath)
-//   currunetPath = true;
+  console.log(pathName);
+
+  const currunetPath = navbarHide.includes(pathName);
+  console.log(currunetPath);
+  //   currunetPath = true;
+
+ 
 
   return (
-    <div>
+    <div className="z-0">
       {!currunetPath ? (
         <div className="navbar bg-base-100">
           <div className="navbar-start">
@@ -41,7 +47,7 @@ const NavBar = () => {
               </div>
               <ul
                 tabIndex={0}
-                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow-sm"
               >
                 <li>
                   <a>Item 1</a>
@@ -62,7 +68,7 @@ const NavBar = () => {
                 </li>
               </ul>
             </div>
-            <a className="btn btn-ghost text-xl">daisyUI</a>
+            <a className="btn btn-ghost text-xl">Mega city cab</a>
           </div>
           <div className="navbar-center hidden lg:flex">
             <ul className="menu menu-horizontal px-1">
@@ -88,12 +94,72 @@ const NavBar = () => {
             </ul>
           </div>
           <div className="navbar-end">
-            <a className="btn">Button</a>
+            { IsAuth() ? (
+              <NavbarProfile />
+            ) : (
+              <div>
+                <button className=" btn">Sig</button>
+              </div>
+            )}
           </div>
         </div>
-      ) : ""}
+      ) : (
+        ""
+      )}
     </div>
   );
 };
 
+
+const NavbarProfile =  () => {
+
+  const router = useRouter();
+
+  
+  const logout = () => {
+    
+    localStorage.removeItem('token');
+    localStorage.removeItem('id');
+    localStorage.removeItem('username');
+    router.push("/signin")
+
+}
+
+
+  return (
+    <div className="dropdown dropdown-end">
+    <div
+      tabIndex={0}
+      role="button"
+      className="btn btn-ghost btn-circle avatar"
+    >
+      <div className="w-10 rounded-full">
+        <Image
+          width={50}
+          height = {50}
+          alt="Tailwind CSS Navbar component"
+          src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+        />
+      </div>
+    </div>
+    <ul
+      tabIndex={0}
+      className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+    >
+      <li>
+        <Link href={"/profile"} className="justify-between">
+          Profile
+          <span className="badge">New</span>
+        </Link>
+      </li>
+      <li>
+        <a>Settings</a>
+      </li>
+      <li>
+        <a onClick={logout}>Logout</a>
+      </li>
+    </ul>
+  </div>
+  )
+}
 export default NavBar;

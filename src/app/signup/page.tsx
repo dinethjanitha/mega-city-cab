@@ -6,7 +6,6 @@ import axios from "axios";
 
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
   const [error, setError] = useState<boolean>(false);
   const [errorName, SetErrorName] = useState<string>("");
 
@@ -17,6 +16,7 @@ const SignUp = () => {
     email: "",
     nic: "",
     gender: "",
+    role: "",
     address: "",
   });
 
@@ -32,51 +32,13 @@ const SignUp = () => {
 
   console.log(formData);
 
-  const togalPassword = () => {
-    if (showPassword) {
-      setShowPassword(false);
-    } else {
-      setShowPassword(true);
-    }
+  const togglePassword = () => {
+    setShowPassword(!showPassword);
   };
-
-//   interface RequiredFeildInterface {
-//     name: {
-//       length: number;
-//     };
-//     password: {
-//       length: number;
-//     };
-//     username: {
-//       length: number;
-//     };
-//     nic: {
-//       length: number;
-//     };
-//     gender: {
-//       length: number;
-//     };
-//     email: {
-//       length: number;
-//     };
-//   }
-
-//   const requiredFeild: RequiredFeildInterface = {
-//     name: { length: 5 },
-//     username: { length: 5 },
-//     password: { length: 5 },
-//     email: { length: 5 },
-//     nic: { length: 5 },
-//     gender: { length: 3 },
-//   };
-
-//   const checkFormData = () => {};
-
-
 
   const ErrorMessage = (message: string) => {
     return (
-      <div role="alert" className="  alert alert-error">
+      <div role="alert" className="alert alert-error">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-6 w-6 shrink-0 stroke-current"
@@ -100,8 +62,6 @@ const SignUp = () => {
   ) => {
     e.preventDefault();
 
-    
-
     try {
       const response = await axios.post("http://localhost:3005/api/v1/user", {
         name: formData.name,
@@ -110,7 +70,7 @@ const SignUp = () => {
         username: formData.username,
         password: formData.password,
         address: formData.address,
-        role: "USER",
+        role: formData.role,
         gender: formData.gender,
       });
 
@@ -124,19 +84,18 @@ const SignUp = () => {
         console.error(e);
       }
       setError(true);
-      // throw new Error("Error!");
     }
   };
 
   return (
     <form action="">
-      <div className=" h-screen w-screen flex justify-center items-center">
-        <div className=" flex flex-col gap-3 shadow-xl p-6 rounded-xl">
+      <div className="h-screen w-screen flex justify-center items-center">
+        <div className="flex flex-col gap-3 shadow-xl p-6 rounded-xl">
           <div>
-            <span className=" text-3xl font-bold">Registration</span>
+            <span className="text-3xl font-bold">Registration</span>
           </div>
           {error && ErrorMessage(errorName)}
-          <div className=" grid grid-cols-2 w-[700] gap-3">
+          <div className="grid grid-cols-2 w-[700px] gap-3">
             <div>
               <label className="input input-bordered flex items-center gap-2">
                 Name *
@@ -188,9 +147,9 @@ const SignUp = () => {
                   required
                 />
                 {showPassword ? (
-                  <IoEye onClick={togalPassword} />
+                  <IoEye onClick={togglePassword} />
                 ) : (
-                  <IoMdEyeOff className="" onClick={togalPassword} />
+                  <IoMdEyeOff className="" onClick={togglePassword} />
                 )}
               </label>
             </div>
@@ -213,7 +172,7 @@ const SignUp = () => {
                 Address
                 <input
                   name="address"
-                  type="email"
+                  type="text"
                   onChange={handleInputChange}
                   className="grow"
                   placeholder="No.23,Matara"
@@ -221,12 +180,24 @@ const SignUp = () => {
                 />
               </label>
             </div>
+            
+            <div>
+              <select
+                name="role"
+                onChange={handleInputChange}
+                className="select select-bordered"
+                required
+              >
+                <option value={"customer"}>Customer</option>
+                <option value={"driver"}>Driver</option>
+              </select>
+            </div>
 
             <div>
               <select
                 name="gender"
                 onChange={handleInputChange}
-                className="select select-bordered w-full"
+                className="select select-bordered"
                 required
               >
                 <option value={"false"}>Gender</option>
@@ -235,10 +206,11 @@ const SignUp = () => {
               </select>
             </div>
           </div>
+          
           <button
             type="submit"
             onClick={handleButton}
-            className=" btn btn-primary"
+            className="btn btn-primary"
           >
             Sign Up
           </button>

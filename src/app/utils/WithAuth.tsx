@@ -3,8 +3,8 @@ import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 import IsAuth from './IsAuth';
 
-const WithAuth = (WrappedComponent: React.ContextType) => {
-  const Wapper = (props) => {
+const WithAuth = (WrappedComponent: React.ComponentType) => {
+  const Wapper = (props: React.JSX.IntrinsicAttributes) => {
     const router = useRouter();
 
     useEffect(() => {

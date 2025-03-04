@@ -1,17 +1,22 @@
 "use client";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+
 
 import { decodeJwt } from "../utils/JwtDecode";
 
 import React, { useState } from "react";
 
+import { useRouter } from "next/navigation";
+
 const SignIn = () => {
+  const router = useRouter();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<boolean | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
-  const router = useRouter();
+
+
+ 
 
   let sk:string  = "";
   const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,6 +32,8 @@ const SignIn = () => {
   ) => {
     e.preventDefault();
 
+  
+
     try {
       const response = await axios.post("http://localhost:3005/api/v1/auth", {
         username: username,
@@ -40,9 +47,14 @@ const SignIn = () => {
       
       sk = response.data;
       localStorage.setItem('token' , sk)
+      // console.log(sk)
       
        try{
           const decode = decodeJwt(sk);
+
+          // console.log(decode.sub)
+
+          localStorage.setItem('id' , decode.id)
 
           if(decode.role == "ADMIN"){
             console.log("ADMIN User");
@@ -54,7 +66,9 @@ const SignIn = () => {
           throw new Error("Erorr!");
        }
 
-      // router.push("/")
+        // router.push("/admin/manageusers");
+       //
+     
        
      } catch (e : unknown ) {
       setSuccess(false)
@@ -62,6 +76,8 @@ const SignIn = () => {
       console.log("Error!");
       console.log(e);
     }
+
+   
   };
 
 
@@ -75,7 +91,7 @@ const SignIn = () => {
   return (
     <div className=" h-screen w-screen flex justify-center items-center">
       <form action="#">
-        <div className="flex flex-col gap-3 w-[500] shadow-xl p-6 rounded-xl">
+        <div className="flex flex-col gap-3 w-[500px] shadow-xl p-6 rounded-xl">
           <span className=" text-3xl font-bold mb-3">Sign In</span>
 
           {success && (
@@ -116,7 +132,7 @@ const SignIn = () => {
             </div>
           )}
 
-          <label className="input input-bordered flex items-center gap-2">
+          <label className="input input-bordered w-full flex items-center gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 16 16"
@@ -132,7 +148,7 @@ const SignIn = () => {
               placeholder="Username"
             />
           </label>
-          <label className="input input-bordered flex items-center gap-2">
+          <label className="input input-bordered flex  w-full items-center gap-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 16 16"
