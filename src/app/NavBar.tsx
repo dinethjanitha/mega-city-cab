@@ -73,14 +73,14 @@ const NavBar = () => {
           <div className="navbar-center hidden lg:flex">
             <ul className="menu menu-horizontal px-1">
               <li>
-                <a>Item 1</a>
+                <Link href={`/cabs`}>Book Cab</Link>
               </li>
               <li>
                 <details>
-                  <summary>Parent</summary>
-                  <ul className="p-2">
+                  <summary>Driver</summary>
+                  <ul className="p-2 w-[150px]">
                     <li>
-                      <a>Submenu 1</a>
+                      <Link href={`/driver/bookings`}>Booking list</Link>
                     </li>
                     <li>
                       <a>Submenu 2</a>
@@ -98,7 +98,7 @@ const NavBar = () => {
               <NavbarProfile />
             ) : (
               <div>
-                <button className=" btn">Sig</button>
+                <button className=" btn">Signin</button>
               </div>
             )}
           </div>
@@ -153,7 +153,7 @@ const NavbarProfile =  () => {
         </Link>
       </li>
       <li>
-        <a>Settings</a>
+        <Link href={`/profile/mybookings`}>My Bookings</Link>
       </li>
       <li>
         <a onClick={logout}>Logout</a>

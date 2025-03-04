@@ -6,7 +6,7 @@ import { decodeJwt } from "../utils/JwtDecode";
 
 import React, { useState } from "react";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const SignIn = () => {
   const router = useRouter();
@@ -14,8 +14,10 @@ const SignIn = () => {
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<boolean | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
+  const searchParams = useSearchParams();
 
 
+  console.log(searchParams.get("redirect"));
  
 
   let sk:string  = "";
@@ -67,6 +69,10 @@ const SignIn = () => {
        }
 
         // router.push("/admin/manageusers");
+
+        const redirectPath = searchParams.get('redirect') || "/";
+        router.push(redirectPath);
+
        //
      
        

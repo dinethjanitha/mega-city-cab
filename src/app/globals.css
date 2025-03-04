@@ -43,3 +43,13 @@ body {
   /* background: var(--background); */
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.react-time-picker__wrapper {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.react-time-picker__inputGroup__input {
+  border: none !important;
+  box-shadow: none !important;
+}
