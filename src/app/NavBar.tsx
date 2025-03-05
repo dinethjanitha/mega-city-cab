@@ -3,21 +3,36 @@
 import { usePathname , useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import IsAuth from "./utils/IsAuth";
+import { jwtDecode } from "jwt-decode";
+import { decodeJwt } from "./utils/JwtDecode";
 const NavBar = () => {
   const pathName = usePathname();
 
 
   const navbarHide = ["/signup", "/signin"];
 
-  console.log(pathName);
+  // console.log(pathName);
 
   const currunetPath = navbarHide.includes(pathName);
   console.log(currunetPath);
   //   currunetPath = true;
 
- 
+  console.log("---checking---")
+
+  const [role , setRole] = useState<string>()
+
+  useEffect(() => {
+    if(localStorage.getItem('token')){
+      const token = localStorage.getItem('token')
+      const tokenDetais = decodeJwt(token)
+      setRole(tokenDetais.role)
+      console.log(tokenDetais)
+    }
+  }, [])
+
+  console.log(role)
 
   return (
     <div className="z-0">
@@ -75,22 +90,53 @@ const NavBar = () => {
               <li>
                 <Link href={`/cabs`}>Book Cab</Link>
               </li>
-              <li>
-                <details>
-                  <summary>Driver</summary>
-                  <ul className="p-2 w-[150px]">
+                {
+                  role == "driver" && (
                     <li>
-                      <Link href={`/driver/bookings`}>Booking list</Link>
-                    </li>
+                    <details>
+                      <summary>Driver</summary>
+                      <ul className="p-2 w-[150px]">
+                        <li>
+                          <Link href={`/driver/bookings`}>Booking list</Link>
+                        </li>
+                        <li>
+                          <Link href={`/driver/addcabs`}>Add Cab</Link>
+                        </li>
+                        <li>
+                          <Link href={`/manageCabs`}>Manage Cab</Link>
+                        </li>
+                        <li>
+                          <a>Submenu 2</a>
+                        </li>
+                      </ul>
+                    </details>
+                  </li>
+                  )
+                }
+            
+            {
+                  role == "driver" && (
                     <li>
-                      <a>Submenu 2</a>
-                    </li>
-                  </ul>
-                </details>
-              </li>
-              <li>
-                <a>Item 3</a>
-              </li>
+                    <details>
+                      <summary>Admin</summary>
+                      <ul className="p-2 w-[150px]">
+                        <li>
+                          <Link href={`/admin/manageusers`}>Manage Users</Link>
+                        </li>
+                        <li>
+                          <Link href={`/driver/bookings`}>Add Cabs</Link>
+                        </li>
+                        <li>
+                          <Link href={`/driver/bookings`}>Manage Booking</Link>
+                        </li>
+                        <li>
+                          <Link href={`/driver/bookings`}>Add Users</Link>
+                        </li>
+                      </ul>
+                    </details>
+                  </li>
+                  )
+                }
             </ul>
           </div>
           <div className="navbar-end">
@@ -98,7 +144,7 @@ const NavBar = () => {
               <NavbarProfile />
             ) : (
               <div>
-                <button className=" btn">Signin</button>
+                <Link href={`/signin`} className=" btn">Signin</Link>
               </div>
             )}
           </div>

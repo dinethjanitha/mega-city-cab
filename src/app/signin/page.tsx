@@ -1,7 +1,6 @@
 "use client";
 import axios from "axios";
 
-
 import { decodeJwt } from "../utils/JwtDecode";
 
 import React, { useState } from "react";
@@ -15,12 +14,11 @@ const SignIn = () => {
   const [error, setError] = useState<boolean | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
   const searchParams = useSearchParams();
-
+  const [loading, setLoading] = useState<boolean>(false);
 
   console.log(searchParams.get("redirect"));
- 
 
-  let sk:string  = "";
+  let sk: string = "";
   const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUsername(e.target.value);
   };
@@ -34,7 +32,7 @@ const SignIn = () => {
   ) => {
     e.preventDefault();
 
-  
+    setLoading(true);
 
     try {
       const response = await axios.post("http://localhost:3005/api/v1/auth", {
@@ -43,53 +41,46 @@ const SignIn = () => {
       });
 
       console.log(response.data);
-      setError(false)
+      setError(false);
       setSuccess(true);
 
-      
       sk = response.data;
-      localStorage.setItem('token' , sk)
+      localStorage.setItem("token", sk);
       // console.log(sk)
-      
-       try{
-          const decode = decodeJwt(sk);
 
-          // console.log(decode.sub)
+      try {
+        const decode = decodeJwt(sk);
 
-          localStorage.setItem('id' , decode.id)
+        // console.log(decode.sub)
 
-          if(decode.role == "ADMIN"){
-            console.log("ADMIN User");
-          }
+        localStorage.setItem("id", decode.id);
 
-          console.log(decode);
-       }catch(e : unknown){
-          console.log(e)
-          throw new Error("Erorr!");
-       }
+        if (decode.role == "ADMIN") {
+          console.log("ADMIN User");
+        }
 
-        // router.push("/admin/manageusers");
+        console.log(decode);
+      } catch (e: unknown) {
+        console.log(e);
+        throw new Error("Erorr!");
+      }
 
-        const redirectPath = searchParams.get('redirect') || "/";
-        router.push(redirectPath);
+      setLoading(false);
+      // router.push("/admin/manageusers");
 
-       //
-     
-       
-     } catch (e : unknown ) {
-      setSuccess(false)
-      setError(true)
+      const redirectPath = searchParams.get("redirect") || "/";
+      router.push(redirectPath);
+
+      //
+    } catch (e: unknown) {
+      setLoading(false);
+
+      setSuccess(false);
+      setError(true);
       console.log("Error!");
       console.log(e);
     }
-
-   
   };
-
-
-
-  
-  
 
   //console.log(password);
   //console.log(username);
@@ -174,9 +165,16 @@ const SignIn = () => {
               placeholder="Password"
             />
           </label>
-          <button className=" btn btn-primary" onClick={handleButton}>
-            Sign In
-          </button>
+
+          {loading ? (
+            <button className=" btn btn-primary" onClick={handleButton}>
+              Sign In <span className="loading loading-dots loading-sm"></span>
+            </button>
+          ) : (
+            <button className=" btn btn-primary" onClick={handleButton}>
+              Sign In
+            </button>
+          )}
         </div>
       </form>
     </div>

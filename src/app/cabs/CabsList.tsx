@@ -53,39 +53,45 @@ const CabsList = () => {
 
 
   return (
-    <div>
-        <div className=' mx-auto grid gap-3 md:grid-cols-2 lg:grid-cols-3 items-center  justify-items-center sm:grid-cols-1 '>
-         {cabs.map((cab,index) => (
-            <div key={index} className="card bg-base-100 w-96 shadow-sm">
-            <figure>
-                <Image
-                src={`http://localhost:3005/` + cab.imgUrl}
-                width={384}
-                height={226}
-                alt="Shoes" />
+    <div className=" w-[1200px] mx-auto ">
+      <h1 className="text-3xl font-bold mb-6 text-center">Available Cabs</h1>
+      
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-1">
+        {cabs.map((cab, index) => (
+          <div key={index} className="card bg-white shadow-lg w-96 rounded-lg overflow-hidden">
+            <figure className="relative h-48 w-full">
+              <Image
+                src={`http://localhost:3005/${cab.imgUrl}`}
+                layout="fill"
+                objectFit="cover"
+                alt={cab.cabName}
+              />
             </figure>
-            <div className="card-body">
-                <h2 className="card-title">
+            <div className="p-6">
+              <h2 className="text-xl font-bold mb-2 flex justify-between items-center">
                 {cab.cabName}
                 <div className="badge badge-secondary">NEW</div>
-                </h2>
-                <p>{cab.cabDescription}</p>
-                <p>First 7KM price: <span className=' text-amber-600'>Rs.{cab.first7kmPrice}</span></p>
-                <div className=" justify-end">
-                        <div className="badge badge-outline">{cab.status}</div>
-                        <div className="badge badge-outline">{cab.sheetCount} pax</div>
-                        <div className="card-actions justify-end">
-                            <button className="btn btn-neutral" onClick={() => router.push(`/cabs/book/${cab.id}`)}>Book Now</button>
-                        </div>
-                </div>
+              </h2>
+              <p className="text-gray-700 mb-4">{cab.cabDescription}</p>
+              <p className="text-gray-700 mb-2">
+                First 7KM price: <span className="text-amber-600">Rs.{cab.first7kmPrice}</span>
+              </p>
+              <div className="flex justify-between items-center">
+                <div className="badge badge-outline">{cab.status}</div>
+                <div className="badge badge-outline">{cab.sheetCount} pax</div>
+              </div>
+              <div className="mt-4 flex justify-end">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => router.push(`/cabs/book/${cab.id}`)}
+                >
+                  Book Now
+                </button>
+              </div>
             </div>
-        </div>
-         ))}
-
-         
-        </div>
-        
-
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

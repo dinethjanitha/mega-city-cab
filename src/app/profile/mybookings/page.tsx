@@ -10,6 +10,8 @@ interface Booking {
   driverId: string;
   bookingTime: string;
   bookingDate: string;
+  totalKM : number,
+  total : number,
   bookingStatus: string;
   note: string;
   startDestination: string;
@@ -25,6 +27,8 @@ const UserBookings = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<boolean>(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  
+  const [allBookings , setAllBooking] = useState<Booking[]>([]);
 
   const router = useRouter();
 
@@ -42,6 +46,8 @@ const UserBookings = () => {
 
       console.log(response.data);
       setBookings(response.data.sort((a, b) => new Date(b.date) - new Date(a.date)));
+      setAllBooking(response.data.sort((a, b) => new Date(b.date) - new Date(a.date)))
+
       
     } catch (e) {
       console.log(e);
@@ -136,6 +142,27 @@ const UserBookings = () => {
     
   };
 
+  const selectUnpaidBookings = () => {
+    // console.log("press")
+    const uppaidBookings = allBookings.filter((booking) => booking.bookingStatus != "paid");
+    setBookings(uppaidBookings);
+  }
+
+  const selectAlllBookings = () => {
+    setBookings(allBookings)
+  }
+
+  const selectpaidBookings = () => {
+    // console.log("press")
+    const uppaidBookings = allBookings.filter((booking) => booking.bookingStatus == "paid");
+    setBookings(uppaidBookings);
+  }
+
+  const curruntRide = () => {
+    const currentRide = allBookings.filter((booking) => booking.bookingStatus == "ready")
+    setBookings(currentRide)
+  }
+
   console.log(selectedBooking);
   if (loading) return <div>Loading...</div>;
 
@@ -180,6 +207,12 @@ const UserBookings = () => {
           </div>
         )}
         <div className="grid grid-cols-1 gap-3">
+          <div className=" flex flex-row gap-3 tabs tabs-box">
+            <input name="my_tabs_1" type="radio" onClick={curruntRide} className="tab checked:text-2xl " aria-label="Active Ride"/>
+            <input name="my_tabs_1" type="radio" onClick={selectAlllBookings} className="tab " aria-label="All Booking"/>
+            <input name="my_tabs_1" type="radio" onClick={selectUnpaidBookings} className="tab " aria-label="Unpaid Bookings"/>
+            <input name="my_tabs_1" type="radio" onClick={selectpaidBookings} className="tab" aria-label="Paid Bookings"/>
+          </div>
           {bookings.map((booking, index) => (
             <div
               key={index}
@@ -221,23 +254,50 @@ const UserBookings = () => {
                   <span className="font-semibold">Customer Message:</span>{" "}
                   {booking.note}
                 </p>
+
+                <p className="text-lg mb-2">
+                  <span className="font-semibold">Total KM:</span>{" "}
+                  {booking.totalKM == 0 ? (<span className=" badge badge-ghost">Route KM not calculate yet</span>) : booking.totalKM }
+                </p>
+               
+                <p className="text-lg mb-2">
+                  <span className="font-semibold">Total Cost:</span>{" "}
+                  {booking.total == 0 ? (<span className=" badge badge-info">Total calculate yet wait for journy start</span>) : booking.totalKM }
+
+                </p>
+
                 <p className="text-sm text-gray-600 mt-4">
                   Please check the booking date and time. Once confirmed, you
                   cannot cancel this order.
                 </p>
                 <div className="card-actions justify-end mt-6">
-                  <button
-                    className="btn btn-primary mr-2"
-                    onClick={() => setSelectedBooking(booking)}
-                  >
-                    Update Booking
-                  </button>
-                  <button
+
+                  { booking.bookingStatus == "ready" && (
+                      <button
+                      className="btn btn-primary mr-2"
+                    >
+                      Pay Now
+                    </button>
+                  ) }
+
+                  {
+                    (booking.bookingStatus != "ready" && booking.bookingStatus != "paid") ?  (
+                        <button
+                      className="btn btn-primary mr-2"
+                      onClick={() => setSelectedBooking(booking)}
+                    >
+                      Update Booking
+                    </button>
+                    ) : "" 
+                  }
+                  {booking.bookingStatus != "paid" && (
+                    <button
                     className="btn btn-warning"
                     onClick={() => handleDelete(booking.id)}
                   >
                     Delete Booking
                   </button>
+                  ) }
                 </div>
               </div>
             </div>

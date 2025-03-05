@@ -38,8 +38,9 @@ const BookingDetails = () => {
       );
 
       console.log(response.data);
-      setBookings(response.data.sort((a, b) => new Date(b.date) - new Date(a.date)));
-      
+      setBookings(
+        response.data.sort((a, b) => new Date(b.date) - new Date(a.date))
+      );
     } catch (e) {
       console.log(e);
     }
@@ -54,46 +55,53 @@ const BookingDetails = () => {
     return date.toLocaleDateString();
   };
 
-  const confirmBooking = async (bookingId:string) => {
+  const confirmBooking = async (bookingId: string) => {
     console.log("press");
     const updatedData = {
-        id : bookingId,
-        bookingStatus : "confrim"
-    }
-    try{
-        const token = localStorage.getItem('token');
-        const response = await axios.patch("http://localhost:3005/api/v1/booking" , updatedData , {
-            headers : {
-                Authorization : `Bearer ${token}`
-            }
-        } )
+      id: bookingId,
+      bookingStatus: "confirm",
+    };
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.patch(
+        "http://localhost:3005/api/v1/booking",
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-        console.log(response);
-        fetchDriverBookings();
-    }catch(e){
-        console.log(e)
+      console.log(response);
+      fetchDriverBookings();
+    } catch (e) {
+      console.log(e);
     }
   };
 
-
-  const cancelBooking = async (bookingId:string) => {
+  const cancelBooking = async (bookingId: string) => {
     console.log("press");
     const updatedData = {
-        id : bookingId,
-        bookingStatus : "cancel"
-    }
-    try{
-        const token = localStorage.getItem('token');
-        const response = await axios.patch("http://localhost:3005/api/v1/booking" , updatedData , {
-            headers : {
-                Authorization : `Bearer ${token}`
-            }
-        } )
+      id: bookingId,
+      bookingStatus: "cancel",
+    };
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.patch(
+        "http://localhost:3005/api/v1/booking",
+        updatedData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-        console.log(response);
-        fetchDriverBookings();
-    }catch(e){
-        console.log(e)
+      console.log(response);
+      fetchDriverBookings();
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -108,7 +116,9 @@ const BookingDetails = () => {
             <div className="w-1/3 bg-gradient-to-r from-green-400 to-blue-500 p-6 flex flex-col justify-center text-white">
               <div className="mb-4">
                 <span className="text-lg font-semibold">Order Status:</span>
-                <div className="badge badge-secondary ml-2">{booking.bookingStatus}</div>
+                <div className="badge badge-secondary ml-2">
+                  {booking.bookingStatus}
+                </div>
               </div>
               <div className="badge badge-success mt-5 text-lg">
                 You Got a New Order
@@ -146,61 +156,71 @@ const BookingDetails = () => {
                 cannot cancel this order.
               </p>
               <div className="card-actions  justify-end mt-6">
-                    {booking.bookingStatus == "new" && (
-                        <div>
-                            <label htmlFor="my_modal_7" className="btn btn-warning mx-3">
-                  Cancel this Booking
-                </label>
+                {booking.bookingStatus == "confirm" && (
+                  <button className=" btn btn-dash" onClick={() => router.push(`/driver/start/${booking.id}`)}>Start Journey</button>
+                )}
+                {booking.bookingStatus == "new" && (
+                  <div>
+                    <label
+                      htmlFor="my_modal_7"
+                      className="btn btn-warning mx-3"
+                    >
+                      Cancel this Booking
+                    </label>
 
-                <input
-                  type="checkbox"
-                  id="my_modal_7"
-                  className="modal-toggle"
-                />
-                <div className="modal" role="dialog">
-                  <div className="modal-box">
-                    <h3 className="text-lg font-bold">Are you sure?</h3>
-                    <p className="py-4">You went to cancel this booking?</p>
-                    <div className="modal-action">
-                      <label htmlFor="my_modal_7" className="btn">
-                        Close
-                      </label>
-                      <button className="btn btn-warning text-black" onClick={() => cancelBooking(booking.id)}>
-                        Confirm
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <label htmlFor="my_modal_6" className="btn btn-primary">
-                  Confirm this Booking
-                </label>
-
-                <input
-                  type="checkbox"
-                  id="my_modal_6"
-                  className="modal-toggle"
-                />
-                <div className="modal" role="dialog">
-                  <div className="modal-box">
-                    <h3 className="text-lg font-bold">Are you sure?</h3>
-                    <p className="py-4">You went to confirm this booking?</p>
-                    <div className="modal-action">
-                      <label htmlFor="my_modal_6" className="btn">
-                        Close
-                      </label>
-                      <label
-                        
-                        htmlFor="my_modal_6"
-                        className="btn btn-success text-black"
-                        onClick={() => confirmBooking(booking.id)}
-                      >
-                        Confirm
-                      </label>
-                    </div>
-                  </div>
-                </div>
+                    <input
+                      type="checkbox"
+                      id="my_modal_7"
+                      className="modal-toggle"
+                    />
+                    <div className="modal" role="dialog">
+                      <div className="modal-box">
+                        <h3 className="text-lg font-bold">Are you sure?</h3>
+                        <p className="py-4">You went to cancel this booking?</p>
+                        <div className="modal-action">
+                          <label htmlFor="my_modal_7" className="btn">
+                            Close
+                          </label>
+                          <button
+                            className="btn btn-warning text-black"
+                            onClick={() => cancelBooking(booking.id)}
+                          >
+                            Confirm
+                          </button>
                         </div>
-                    ) }
+                      </div>
+                    </div>
+                    <label htmlFor="my_modal_6" className="btn btn-primary">
+                      Confirm this Booking
+                    </label>
+
+                    <input
+                      type="checkbox"
+                      id="my_modal_6"
+                      className="modal-toggle"
+                    />
+                    <div className="modal" role="dialog">
+                      <div className="modal-box">
+                        <h3 className="text-lg font-bold">Are you sure?</h3>
+                        <p className="py-4">
+                          You went to confirm this booking?
+                        </p>
+                        <div className="modal-action">
+                          <label htmlFor="my_modal_6" className="btn">
+                            Close
+                          </label>
+                          <label
+                            htmlFor="my_modal_6"
+                            className="btn btn-success text-black"
+                            onClick={() => confirmBooking(booking.id)}
+                          >
+                            Confirm
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
