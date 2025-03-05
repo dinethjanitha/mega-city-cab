@@ -39,7 +39,7 @@ const BookingDetails = () => {
 
       console.log(response.data);
       setBookings(
-        response.data.sort((a, b) => new Date(b.date) - new Date(a.date))
+        response.data.sort((a: Booking, b: Booking) => new Date(b.date).getTime() - new Date(a.date).getTime())
       );
     } catch (e) {
       console.log(e);

@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import IsAuth from "./utils/IsAuth";
-import { jwtDecode } from "jwt-decode";
 import { decodeJwt } from "./utils/JwtDecode";
 const NavBar = () => {
   const pathName = usePathname();
@@ -25,12 +24,12 @@ const NavBar = () => {
 
   useEffect(() => {
     if(localStorage.getItem('token')){
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('token') || ""
       const tokenDetais = decodeJwt(token)
       setRole(tokenDetais.role)
       console.log(tokenDetais)
     }
-  }, [])
+  }, [currunetPath])
 
   console.log(role)
 
@@ -91,7 +90,7 @@ const NavBar = () => {
                 <Link href={`/cabs`}>Book Cab</Link>
               </li>
                 {
-                  role == "driver" && (
+                  (role == "driver" || role == "admin") && (
                     <li>
                     <details>
                       <summary>Driver</summary>
@@ -103,10 +102,7 @@ const NavBar = () => {
                           <Link href={`/driver/addcabs`}>Add Cab</Link>
                         </li>
                         <li>
-                          <Link href={`/manageCabs`}>Manage Cab</Link>
-                        </li>
-                        <li>
-                          <a>Submenu 2</a>
+                          <Link href={`/driver/mycabs`}>My Cabs</Link>
                         </li>
                       </ul>
                     </details>
@@ -115,7 +111,7 @@ const NavBar = () => {
                 }
             
             {
-                  role == "driver" && (
+                  (role == "driver" || role == "admin") && (
                     <li>
                     <details>
                       <summary>Admin</summary>
