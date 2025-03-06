@@ -10,6 +10,7 @@ import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import IsAuth from "@/app/utils/IsAuth";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface BookCabProps {
   cabid: string;
@@ -41,6 +42,8 @@ const BookCab: React.FC<BookCabProps> = ({ cabid }) => {
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const [loading , setLoading] = useState<boolean>(false)
   const userid = localStorage.getItem("id");
+
+
 
   useEffect(() => {
     const fetchCab = async () => {
@@ -187,6 +190,17 @@ const BookCab: React.FC<BookCabProps> = ({ cabid }) => {
 
 
         console.log(response);
+
+        // sendBookingEmail();
+        const userEmail = localStorage.getItem('email');
+        const resopnse = await axios.post('http://localhost:3000/api/sendemail', {
+          email: userEmail,
+          bookingData: updatedBookingData,
+          mzg : "changed"
+        });
+
+        console.log("-------resopnse-------")
+        console.log(resopnse)
       } catch (e) {
         setLoading(false)
         console.log(e);
@@ -282,16 +296,15 @@ const BookCab: React.FC<BookCabProps> = ({ cabid }) => {
             <h2 className="text-xl font-bold text-blue-900">
               Select a Booking Time
             </h2>
-            <div className="relative mt-4 w-56">
+            <div className="relative mt-4 w-56 h-12">
               <TimePicker
                 name="bookingTime"
                 value={time}
-                className="input relative z-5"
-                onChange={setTime}
+                className="input relative z-5 h-full"
+                onChange={(value) => setTime(value || "10:00")}
                 format="HH:mm" // Set the format to 24-hour clock
                 required
               />
-
               <div id="date-picker" className="hidden"></div>
             </div>
           </div>
@@ -338,7 +351,7 @@ const BookCab: React.FC<BookCabProps> = ({ cabid }) => {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span>Booking place success full! View <a href="#" className=" link link-secondary">My Book</a> page for status!</span>
+                <span>Booking place success full! View <Link href={`/profile/mybookings`} className=" link link-secondary">My Book</Link> page for status!</span>
               </div>
             )}
 

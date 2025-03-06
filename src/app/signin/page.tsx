@@ -54,6 +54,7 @@ const SignIn = () => {
         // console.log(decode.sub)
 
         localStorage.setItem("id", decode.id);
+        localStorage.setItem("email", decode.email);
 
         if (decode.role == "ADMIN") {
           console.log("ADMIN User");

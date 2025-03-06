@@ -21,7 +21,7 @@ const BookingDetails = () => {
   const driverId = localStorage.getItem("id");
 
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  // const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -203,6 +203,7 @@ const BookingDetails = () => {
                       <div className="modal-box">
                         <h3 className="text-lg font-bold">Are you sure?</h3>
                         <p className="py-4">
+                         
                           You went to confirm this booking?
                         </p>
                         <div className="modal-action">

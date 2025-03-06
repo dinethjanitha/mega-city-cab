@@ -1,4 +1,5 @@
 "use client";
+import SuccessAlert from "@/app/utils/SuccessAlert";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -209,7 +210,7 @@ const UserBookings = () => {
         <div className="grid grid-cols-1 gap-3">
           <div className=" flex flex-row gap-3 tabs tabs-box">
             <input name="my_tabs_1" type="radio" onClick={curruntRide} className="tab checked:text-2xl " aria-label="Active Ride"/>
-            <input name="my_tabs_1" type="radio" onClick={selectAlllBookings} className="tab " aria-label="All Booking"/>
+            <input defaultChecked  name="my_tabs_1" type="radio" onClick={selectAlllBookings} className="tab " aria-label="All Booking"/>
             <input name="my_tabs_1" type="radio" onClick={selectUnpaidBookings} className="tab " aria-label="Unpaid Bookings"/>
             <input name="my_tabs_1" type="radio" onClick={selectpaidBookings} className="tab" aria-label="Paid Bookings"/>
           </div>
@@ -218,6 +219,7 @@ const UserBookings = () => {
               key={index}
               className="card card-side shadow-2xl bg-white rounded-lg overflow-hidden w-full max-w-4xl mx-auto"
             >
+             
               <div className="w-1/3 bg-gradient-to-r from-green-400 to-blue-500 p-6 flex flex-col justify-center text-white">
                 <div className="mb-4">
                   <span className="text-lg font-semibold">Order Status:</span>
@@ -228,6 +230,21 @@ const UserBookings = () => {
                 </div>
               </div>
               <div className="card-body p-6">
+                { booking.bookingStatus == "new" && (
+                   <div role="alert" className="alert my-3">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-info h-6 w-6 shrink-0">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      <span><b>This Booking Not Confirm by Driver yet!</b></span>
+                  </div>
+                ) }
+
+              { booking.bookingStatus == "confirm" && (
+                   <SuccessAlert mzg="This Booking is confirm your bill will calculate after start Journey"/>
+                ) }
+              { booking.bookingStatus == "ready" && (
+                   <SuccessAlert mzg="Bill is ready for your booking you can Pay it now"/>
+                ) }
                 <h2 className="card-title text-2xl font-bold mb-2">
                   Booking ID: {booking.id}
                 </h2>
@@ -275,6 +292,7 @@ const UserBookings = () => {
                   { booking.bookingStatus == "ready" && (
                       <button
                       className="btn btn-primary mr-2"
+                      onClick={() => router.push(`/profile/mybookings/pay/${booking.id}`)}
                     >
                       Pay Now
                     </button>

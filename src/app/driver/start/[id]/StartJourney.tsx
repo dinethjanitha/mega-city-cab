@@ -172,6 +172,7 @@ const StartJourney: React.FC<StartJourneyInter> = ({ id }) => {
       console.log("----------update response");
       console.log(response);
       fetchBooking();
+
     } catch (error) {
       console.log(error);
     }
@@ -302,7 +303,10 @@ const StartJourney: React.FC<StartJourneyInter> = ({ id }) => {
           <div className="fixed backdrop-blur-2xl inset-0 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg">
               <h2 className="text-xl font-bold mb-4">Confirm Booking</h2>
-              <p className="mb-4">Are you sure you want to book this cab?</p>
+              <p className="mb-4">
+                Please double check the distinstion is correct  
+              <br/>
+                Are you sure distinstion is correct?</p>
               <div className="flex justify-end">
                 <button
                   className="btn btn-secondary mr-2"
@@ -317,7 +321,7 @@ const StartJourney: React.FC<StartJourneyInter> = ({ id }) => {
                     setShowConfirmation(false);
                   }}
                 >
-                  Confirm
+                 Yes, Confirm
                 </button>
               </div>
             </div>

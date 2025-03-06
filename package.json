@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@sendgrid/mail": "^8.1.4",
     "@tailwindcss/postcss": "^4.0.9",
     "axios": "^1.7.9",
     "cally": "^0.8.0",

@@ -5,6 +5,7 @@ interface TokenObject {
     sub : string,
     exp : string,
     role : string
+    email:string
 }
 
 export const decodeJwt= (token:string) => {

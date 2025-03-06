@@ -87,9 +87,8 @@ const AddCabs = () => {
       setLoading(false);
       setAddSuccess(true);
       console.log(response);
-    } catch (e: unknown) {
+    } catch (e) {
         if (axios.isAxiosError(e) && e.response?.data != null) {
-        
             console.log(e);
             setError(e.response.data);
         }else{
