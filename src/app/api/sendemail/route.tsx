@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import sgMail from '@sendgrid/mail';
 
-sgMail.setApiKey('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');
+sgMail.setApiKey('');
 
 export async function POST(req) {
   const { email, bookingData , mzg } = await req.json();
