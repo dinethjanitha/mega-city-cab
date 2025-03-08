@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import SuccessAlert from '@/app/utils/SuccessAlert';
 import LoadingAlert from '@/app/utils/LoadingAlert';
+import { useRouter } from 'next/navigation';
 
 interface Cab{
     id: string;
@@ -32,6 +33,7 @@ const ManageCab : React.FC<Props> = ({ id }) => {
     const [loading, setLoading] = useState<boolean>(false)
     const [success, setSuccess] = useState<boolean>(false)
     
+    const router = useRouter();
 
     const fetchCab = async () => {
         // const token = localStorage.getItem("token");
@@ -98,6 +100,23 @@ const ManageCab : React.FC<Props> = ({ id }) => {
     }
 
     console.log(cab)
+
+    const deleteCab = async () => {
+      const token = localStorage.getItem('token');
+      try{
+        const response = await axios.delete(`http://localhost:3005/api/v1/cab/${cab?.id}` , {
+          headers : {
+            Authorization : `Bearer ${token}`
+          }
+        })
+
+        console.log(response)
+        router.push('/driver/addcabs')
+      }catch(error){
+        console.log(error)
+      }
+
+    }
   return (
     <div className="flex w-screen justify-center py-10">
       <div className="grid w-[800px] grid-cols-1 bg-white shadow-lg rounded-lg p-6">
@@ -199,7 +218,39 @@ const ManageCab : React.FC<Props> = ({ id }) => {
               </button>
             )}
             
+           
 
+
+              <label htmlFor="my_modal_6" className="btn btn-primary mx-3">
+                      Delete
+                    </label>
+
+                    <input
+                      type="checkbox"
+                      id="my_modal_6"
+                      className="modal-toggle"
+                    />
+                    <div className="modal" role="dialog">
+                      <div className="modal-box">
+                        <h3 className="text-lg font-bold">Are you sure?</h3>
+                        <p className="py-4">
+                         
+                          You went to delete this cab?
+                        </p>
+                        <div className="modal-action">
+                          <label htmlFor="my_modal_6" className="btn">
+                            Close
+                          </label>
+                          <label
+                            htmlFor="my_modal_6"
+                            className="btn btn-success text-black"
+                            onClick={deleteCab}
+                          >
+                            Confirm
+                          </label>
+                        </div>
+                      </div>
+                    </div>
            
         
         </div>

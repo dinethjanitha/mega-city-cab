@@ -308,7 +308,7 @@ const UserBookings = () => {
                     </button>
                     ) : "" 
                   }
-                  {booking.bookingStatus != "paid" && (
+                  {booking.bookingStatus != "ready" && (
                     <button
                     className="btn btn-warning"
                     onClick={() => handleDelete(booking.id)}

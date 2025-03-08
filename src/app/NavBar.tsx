@@ -63,23 +63,53 @@ const NavBar = () => {
                 tabIndex={0}
                 className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow-sm"
               >
-                <li>
-                  <a>Item 1</a>
-                </li>
-                <li>
-                  <a>Parent</a>
-                  <ul className="p-2">
+                 <li>
+                <Link href={`/cabs`}>Book Cab</Link>
+              </li>
+                {
+                  (role == "driver" || role == "admin") && (
                     <li>
-                      <a>Submenu 1</a>
-                    </li>
+                    <details>
+                      <summary>Driver</summary>
+                      <ul className="p-2 w-[150px]">
+                        <li>
+                          <Link href={`/driver/bookings`}>Booking list</Link>
+                        </li>
+                        <li>
+                          <Link href={`/driver/addcabs`}>Add Cab</Link>
+                        </li>
+                        <li>
+                          <Link href={`/driver/mycabs`}>My Cabs</Link>
+                        </li>
+                      </ul>
+                    </details>
+                  </li>
+                  )
+                }
+            
+            {
+                  (role == "admin") && (
                     <li>
-                      <a>Submenu 2</a>
-                    </li>
-                  </ul>
-                </li>
-                <li>
-                  <a>Item 3</a>
-                </li>
+                    <details>
+                      <summary>Admin</summary>
+                      <ul className="p-2 w-[150px]">
+                        <li>
+                          <Link href={`/admin/manageusers`}>Manage Users</Link>
+                        </li>
+                        <li>
+                          <Link href={`/driver/bookings`}>Add Cabs</Link>
+                        </li>
+                        <li>
+                          <Link href={`/driver/bookings`}>Manage Booking</Link>
+                        </li>
+                        <li>
+                          <Link href={`/driver/bookings`}>Add Users</Link>
+                        </li>
+                      </ul>
+                    </details>
+                  </li>
+                  )
+                }
               </ul>
             </div>
             <a className="btn btn-ghost text-xl">Mega city cab</a>
@@ -111,7 +141,7 @@ const NavBar = () => {
                 }
             
             {
-                  (role == "driver" || role == "admin") && (
+                  (role == "admin") && (
                     <li>
                     <details>
                       <summary>Admin</summary>
