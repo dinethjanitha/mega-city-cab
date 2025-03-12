@@ -6,8 +6,9 @@ import { decodeJwt } from "../utils/JwtDecode";
 import React, { useState } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
+import { SetCookies } from "../utils/SetCookies";
 
-const SignIn = () => {
+const SignIn =  () => {
   const router = useRouter();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -15,8 +16,9 @@ const SignIn = () => {
   const [success, setSuccess] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState<boolean>(false);
-
+ 
   console.log(searchParams.get("redirect"));
+  
 
   let sk: string = "";
   const handleUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,6 +32,7 @@ const SignIn = () => {
   const handleButton = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
+  
     e.preventDefault();
 
     setLoading(true);
@@ -48,13 +51,20 @@ const SignIn = () => {
       localStorage.setItem("token", sk);
       // console.log(sk)
 
+      SetCookies("token" , sk , 2);
+
       try {
+
+        console.log("hereeeeee-----------")
+
         const decode = decodeJwt(sk);
 
-        // console.log(decode.sub)
-
         localStorage.setItem("id", decode.id);
+        SetCookies("id" , decode.id , 2);
+
         localStorage.setItem("email", decode.email);
+        SetCookies("email" , decode.email , 2);
+
 
         if (decode.role == "ADMIN") {
           console.log("ADMIN User");

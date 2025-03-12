@@ -97,7 +97,7 @@ const ManageUsers = () => {
   console.log(formData);
 
   return (
-    <div className="p-10 w-screen">
+    <div className="p-10">
       <div className="overflow-x-auto">
         <table className="table w-full">
           <thead>

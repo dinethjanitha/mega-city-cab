@@ -1,8 +1,31 @@
 "use client"
 import { jwtDecode } from 'jwt-decode'
+import { GetCookies } from './GetCookies';
+import Cookies from 'js-cookie';
+
 
 const IsAuth = () => {
-    const token = localStorage.getItem('token')
+
+    // const token = GetCookies('token');
+    const token = localStorage.getItem('token');
+
+    console.log(GetCookies('token'))
+    console.log("Your token is: ");
+    console.log("Your token is: ");
+    console.log("Your token is: ");
+    console.log("Your token is: ");
+    console.log("Your token is: ");
+    console.log("Your token is: ");
+    console.log("Your token is: ");
+    console.log("Your token is: ");
+    console.log("Your token is: ");
+    console.log("Your token is: ");
+    console.log("Your token is: " +  token);
+    console.log("Your token is: " +  token);
+    console.log("Your token is: " +  token);
+    console.log("Your token is: " +  token);
+    console.log("Your token is: " +  token);
+    console.log("Your token is: " +  token);
     console.log("Your token is: " +  token);
 
     if(!token){

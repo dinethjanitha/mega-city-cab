@@ -17,8 +17,12 @@ const NavBar = () => {
   const currunetPath = navbarHide.includes(pathName);
   console.log(currunetPath);
   //   currunetPath = true;
+  const [check ,setCheck] = useState<string>("");
 
   console.log("---checking---")
+
+
+
 
   const [role , setRole] = useState<string>()
 
@@ -32,6 +36,9 @@ const NavBar = () => {
   }, [currunetPath])
 
   console.log(role)
+
+  const isActive = (path: string) => pathName === path ? "btn border-0" : "";
+
 
   return (
     <div className="z-0">
@@ -65,6 +72,18 @@ const NavBar = () => {
               >
                  <li>
                 <Link href={`/cabs`}>Book Cab</Link>
+              </li>
+                 <li>
+                <Link href={`/cabs`}>Our services</Link>
+              </li>
+                 <li>
+                <Link href={`/cabs`}>Contact Us</Link>
+              </li>
+                 <li>
+                <Link href={`/cabs`}>About Us</Link>
+              </li>
+              <li>
+                <Link href={`/guide/faq`}>Guide</Link>
               </li>
                 {
                   (role == "driver" || role == "admin") && (
@@ -112,18 +131,30 @@ const NavBar = () => {
                 }
               </ul>
             </div>
-            <a className="btn btn-ghost text-xl">Mega city cab</a>
+            <Link href={"/"} className="btn btn-ghost text-xl">Mega city cab</Link>
           </div>
           <div className="navbar-center hidden lg:flex">
             <ul className="menu menu-horizontal px-1">
               <li>
-                <Link href={`/cabs`}>Book Cab</Link>
+                <Link id="cabs" href={`/cabs`} className={isActive("/cabs")}>Book Cab</Link>
+              </li>
+                 <li>
+                <Link id="services" href={`/cabs`} className={isActive("/services")}>Our services</Link>
+              </li>
+                 <li>
+                <Link id="" href={`/cabs`}>Contact Us</Link>
+              </li>
+                 <li>
+                <Link id="" href={`/cabs`}>About Us</Link>
+              </li>
+                 <li>
+                <Link id="" href={`/guide/faq`} className={isActive("/guide/faq")}>Guide</Link>
               </li>
                 {
                   (role == "driver" || role == "admin") && (
                     <li>
                     <details>
-                      <summary>Driver</summary>
+                      <summary className={isActive("/driver/bookings")}>Driver</summary>
                       <ul className="p-2 w-[150px]">
                         <li>
                           <Link href={`/driver/bookings`}>Booking list</Link>
@@ -166,7 +197,7 @@ const NavBar = () => {
             </ul>
           </div>
           <div className="navbar-end">
-            { IsAuth() ? (
+            { true ? (
               <NavbarProfile />
             ) : (
               <div>

@@ -324,7 +324,7 @@ const UserBookings = () => {
       </div>
 
       {selectedBooking && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
+        <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-2xl">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
             <h2 className="text-2xl font-bold mb-4">Update Booking</h2>
             <form>

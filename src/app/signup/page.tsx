@@ -8,6 +8,7 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [errorName, SetErrorName] = useState<string>("");
+  const [success, setSuccess] = useState<boolean>(false);
 
   const [formData, setFormData] = useState({
     username: "",
@@ -57,6 +58,27 @@ const SignUp = () => {
     );
   };
 
+  const SuccessMessage = () => {
+    return (
+      <div role="alert" className="alert alert-success">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-6 w-6 shrink-0 stroke-current"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <span>Registration successful!</span>
+      </div>
+    );
+  };
+
   const handleButton = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -76,6 +98,7 @@ const SignUp = () => {
 
       console.log(response.data);
       setError(false);
+      setSuccess(true);
     } catch (e: unknown) {
       if (axios.isAxiosError(e) && e.response) {
         console.log(e.response.data);
@@ -84,6 +107,7 @@ const SignUp = () => {
         console.error(e);
       }
       setError(true);
+      setSuccess(false);
     }
   };
 
@@ -95,6 +119,7 @@ const SignUp = () => {
             <span className="text-3xl font-bold">Registration</span>
           </div>
           {error && ErrorMessage(errorName)}
+          {success && SuccessMessage()}
           <div className="grid grid-cols-2 w-[700px] gap-3">
             <div>
               <label className="input input-bordered flex items-center gap-2">

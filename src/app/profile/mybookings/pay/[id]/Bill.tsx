@@ -155,7 +155,7 @@ const Bill : React.FC<BillProp> = ({ id }) => {
                         <div className='mt-3'>Avarage Km price:</div>
                         <div className='mt-3'>Total Km: {bill.totalKM} KM</div>
                         <div className='mt-3'>Tax: Rs. 0.00</div>
-                        <div className='mt-3'>Discount: {discountPercentage == null ? ("Not avalible") : (discountPercentage)}</div>
+                        <div className='mt-3'>Discount: {discountPercentage == null ? ("Not avalible") : (discountPercentage + "%")}</div>
                         <div className='mt-3'>Total Price: Rs.{updateBill.total == 0 ? (bill.total) : (updateBill.total)} </div>
                         <div className=' text-2xl font-bold mt-7'>Apply Discount code</div>
                         <input type="text" className=' input mt-3' onChange={getDiscountCode} disabled={isDisabled}/>

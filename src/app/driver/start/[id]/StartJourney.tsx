@@ -1,5 +1,6 @@
 "use client";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 interface StartJourneyInter {
@@ -61,6 +62,8 @@ const StartJourney: React.FC<StartJourneyInter> = ({ id }) => {
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
 
   const [cabDetails, setCabDetails] = useState<Cab>();
+
+  const router = useRouter();
 
   const fetchBooking = async () => {
     setLoading(true);
@@ -171,6 +174,7 @@ const StartJourney: React.FC<StartJourneyInter> = ({ id }) => {
 
       console.log("----------update response");
       console.log(response);
+      router.push("/driver/bookings")
       fetchBooking();
 
     } catch (error) {
