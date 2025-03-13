@@ -17,7 +17,8 @@ const nextConfig: NextConfig = {
       "tailwindui.com",
       "st3.depositphotos.com",
       "localhost",
-      "unpkg.com"
+      "unpkg.com",
+      "images.unsplash.com"
     ],
   },
 };

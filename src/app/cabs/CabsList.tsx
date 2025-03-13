@@ -88,7 +88,7 @@ const CabsList = () => {
   console.log(searchCabs);
 
   return (
-    <div className="container lg:w-[1200px] lg:mx-auto flex flex-col">
+    <div className="  ">
       <div className="flex flex-col items-center mb-6 p-3">
         <h1 className="text-3xl font-bold mb-6 text-center">Available Cabs</h1>
         <input

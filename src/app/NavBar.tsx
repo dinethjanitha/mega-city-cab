@@ -197,7 +197,7 @@ const NavBar = () => {
             </ul>
           </div>
           <div className="navbar-end">
-            { true ? (
+            { IsAuth() ? (
               <NavbarProfile />
             ) : (
               <div>
@@ -241,7 +241,7 @@ const NavbarProfile =  () => {
           width={50}
           height = {50}
           alt="Tailwind CSS Navbar component"
-          src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+          src="https://images.unsplash.com/photo-1633332755192-727a05c4013d"
         />
       </div>
     </div>
