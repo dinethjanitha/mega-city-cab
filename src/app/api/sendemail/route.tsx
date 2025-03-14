@@ -3,11 +3,32 @@ import sgMail from '@sendgrid/mail';
 
 sgMail.setApiKey('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');
 
-export async function POST(req) {
-  const { email, bookingData , mzg } = await req.json();
+interface BookingData {
+  userId: string;
+  cabId: string;
+  driverId: string;
+  bookingTime: string;
+  bookingDate: string;
+  bookingStatus: string;
+  note: string;
+  date: string;
+  startDestination: string;
+  endDestination: string;
+  startTime: string;
+}
+
+interface EmailRequest {
+  email: string;
+  bookingData: BookingData;
+  mzg: string;
+}
+
+export async function POST(req: Request): Promise<NextResponse> {
+  const { email, bookingData, mzg }: EmailRequest = await req.json();
 
   console.log("--------------------bookingData-------------------");
   console.log(bookingData);
+  console.log(mzg);
 
   const msg = {
     to: email,
@@ -80,18 +101,4 @@ export async function POST(req) {
     console.error(error);
     return NextResponse.json({ message: 'Error sending email' }, { status: 500 });
   }
-}
-
-
-interface TestProp
-{
-  params: Promise<{ slug: string }>
-}
-
-
-
-
-export default async function Page({params,}: TestProp ) {
-  const { slug } = await params
-  return <div>My Post: {slug}</div>
 }

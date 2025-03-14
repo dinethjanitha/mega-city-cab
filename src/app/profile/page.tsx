@@ -29,7 +29,7 @@ const ProfilePage = () => {
   });
 
   const [copySuccess, setCopySuccess] = useState("");
-  const [isEditing, setIsEditing] = useState<boolean>(false);
+  // const [isEditing, setIsEditing] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [success , setSuccess] = useState<boolean>(false)
 
@@ -84,7 +84,7 @@ const ProfilePage = () => {
         }
       });
       console.log("Profile updated successfully", response.data);
-      setIsEditing(false);
+      // setIsEditing(false);
       setShowModal(false);
       setSuccess(true)
       setTimeout(() => setSuccess(false) , 3000)
@@ -94,9 +94,9 @@ const ProfilePage = () => {
     }
   };
 
-  const InfoRow = ({ icon: Icon, label, value, name }: { icon: React.ComponentType; label: string; value: string; name: string }) => (
+  const InfoRow = ({ label, value}: { icon: React.ComponentType; label: string; value: string; name: string }) => (
     <div className="flex items-center p-4 hover:bg-gray-50 transition-all duration-300 rounded-lg group">
-      <Icon className="w-5 h-5 text-gray-500 mr-3"  />
+
       <div className="flex-1">
         <p className="text-sm text-gray-500">{label}</p>
         <p className="text-gray-800 font-medium">{value}</p>

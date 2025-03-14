@@ -1,44 +1,42 @@
 "use client";
 
-import { usePathname , useRouter } from "next/navigation";
-import Image from "next/image";
+import { usePathname } from "next/navigation";
+// import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import IsAuth from "./utils/IsAuth";
+import dynamic from "next/dynamic";
+// import IsAuth from "./utils/IsAuth";
 import { decodeJwt } from "./utils/JwtDecode";
+import { useCookies } from "next-client-cookies";
+
+const NavbarProfile = dynamic(() => import("./NavbarProfile"), { ssr: false });
+
 const NavBar = () => {
+  const cookies = useCookies();
+  // const auth = IsAuth() || false;
   const pathName = usePathname();
 
 
+  const authcheck = (cookies.get('token')?.toString().length ?? 0) > 5;
+
+  console.log("authcheck")
+  console.log(authcheck)
+
   const navbarHide = ["/signup", "/signin"];
 
-  // console.log(pathName);
-
   const currunetPath = navbarHide.includes(pathName);
-  console.log(currunetPath);
-  //   currunetPath = true;
-  const [check ,setCheck] = useState<string>("");
 
-  console.log("---checking---")
-
-
-
-
-  const [role , setRole] = useState<string>()
+  const [role, setRole] = useState<string>();
 
   useEffect(() => {
-    if(localStorage.getItem('token')){
-      const token = localStorage.getItem('token') || ""
-      const tokenDetais = decodeJwt(token)
-      setRole(tokenDetais.role)
-      console.log(tokenDetais)
+    if (localStorage.getItem('token')) {
+      const token = localStorage.getItem('token') || "";
+      const tokenDetais = decodeJwt(token);
+      setRole(tokenDetais.role);
     }
-  }, [currunetPath])
-
-  console.log(role)
+  }, [currunetPath]);
 
   const isActive = (path: string) => pathName === path ? "btn border-0" : "";
-
 
   return (
     <div className="z-0">
@@ -70,24 +68,23 @@ const NavBar = () => {
                 tabIndex={0}
                 className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow-sm"
               >
-                 <li>
-                <Link href={`/cabs`}>Book Cab</Link>
-              </li>
-                 <li>
-                <Link href={`/cabs`}>Our services</Link>
-              </li>
-                 <li>
-                <Link href={`/cabs`}>Contact Us</Link>
-              </li>
-                 <li>
-                <Link href={`/cabs`}>About Us</Link>
-              </li>
-              <li>
-                <Link href={`/guide/faq`}>Guide</Link>
-              </li>
-                {
-                  (role == "driver" || role == "admin") && (
-                    <li>
+                <li>
+                  <Link href={`/cabs`}>Book Cab</Link>
+                </li>
+                <li>
+                  <Link href={`/cabs`}>Our services</Link>
+                </li>
+                <li>
+                  <Link href={`/cabs`}>Contact Us</Link>
+                </li>
+                <li>
+                  <Link href={`/cabs`}>About Us</Link>
+                </li>
+                <li>
+                  <Link href={`/guide/faq`}>Guide</Link>
+                </li>
+                {(role === "driver" || role === "admin") && (
+                  <li>
                     <details>
                       <summary>Driver</summary>
                       <ul className="p-2 w-[150px]">
@@ -103,12 +100,9 @@ const NavBar = () => {
                       </ul>
                     </details>
                   </li>
-                  )
-                }
-            
-            {
-                  (role == "admin") && (
-                    <li>
+                )}
+                {role === "admin" && (
+                  <li>
                     <details>
                       <summary>Admin</summary>
                       <ul className="p-2 w-[150px]">
@@ -127,83 +121,81 @@ const NavBar = () => {
                       </ul>
                     </details>
                   </li>
-                  )
-                }
+                )}
               </ul>
             </div>
-            <Link href={"/"} className="btn btn-ghost text-xl">Mega city cab</Link>
+            <Link href={"/"} className="btn btn-ghost text-xl">Mega City Cab</Link>
           </div>
           <div className="navbar-center hidden lg:flex">
             <ul className="menu menu-horizontal px-1">
               <li>
                 <Link id="cabs" href={`/cabs`} className={isActive("/cabs")}>Book Cab</Link>
               </li>
-                 <li>
+              <li>
                 <Link id="services" href={`/cabs`} className={isActive("/services")}>Our services</Link>
               </li>
-                 <li>
+              <li>
                 <Link id="" href={`/cabs`}>Contact Us</Link>
               </li>
-                 <li>
+              <li>
                 <Link id="" href={`/cabs`}>About Us</Link>
               </li>
-                 <li>
+              <li>
                 <Link id="" href={`/guide/faq`} className={isActive("/guide/faq")}>Guide</Link>
               </li>
-                {
-                  (role == "driver" || role == "admin") && (
-                    <li>
-                    <details>
-                      <summary className={isActive("/driver/bookings")}>Driver</summary>
-                      <ul className="p-2 w-[150px]">
-                        <li>
-                          <Link href={`/driver/bookings`}>Booking list</Link>
-                        </li>
-                        <li>
-                          <Link href={`/driver/addcabs`}>Add Cab</Link>
-                        </li>
-                        <li>
-                          <Link href={`/driver/mycabs`}>My Cabs</Link>
-                        </li>
-                      </ul>
-                    </details>
-                  </li>
-                  )
-                }
-            
-            {
-                  (role == "admin") && (
-                    <li>
-                    <details>
-                      <summary>Admin</summary>
-                      <ul className="p-2 w-[150px]">
-                        <li>
-                          <Link href={`/admin/manageusers`}>Manage Users</Link>
-                        </li>
-                        <li>
-                          <Link href={`/driver/bookings`}>Add Cabs</Link>
-                        </li>
-                        <li>
-                          <Link href={`/driver/bookings`}>Manage Booking</Link>
-                        </li>
-                        <li>
-                          <Link href={`/driver/bookings`}>Add Users</Link>
-                        </li>
-                      </ul>
-                    </details>
-                  </li>
-                  )
-                }
+              {(role === "driver" || role === "admin") && (
+                <li>
+                  <details>
+                    <summary className={isActive("/driver/bookings")}>Driver</summary>
+                    <ul className="p-2 w-[150px]">
+                      <li>
+                        <Link href={`/driver/bookings`}>Booking list</Link>
+                      </li>
+                      <li>
+                        <Link href={`/driver/addcabs`}>Add Cab</Link>
+                      </li>
+                      <li>
+                        <Link href={`/driver/mycabs`}>My Cabs</Link>
+                      </li>
+                    </ul>
+                  </details>
+                </li>
+              )}
+              {role === "admin" && (
+                <li>
+                  <details>
+                    <summary>Admin</summary>
+                    <ul className="p-2 w-[150px]">
+                      <li>
+                        <Link href={`/admin/manageusers`}>Manage Users</Link>
+                      </li>
+                      <li>
+                        <Link href={`/driver/bookings`}>Add Cabs</Link>
+                      </li>
+                      <li>
+                        <Link href={`/driver/bookings`}>Manage Booking</Link>
+                      </li>
+                      <li>
+                        <Link href={`/driver/bookings`}>Add Users</Link>
+                      </li>
+                    </ul>
+                  </details>
+                </li>
+              )}
             </ul>
           </div>
           <div className="navbar-end">
-            { IsAuth() ? (
-              <NavbarProfile />
-            ) : (
               <div>
-                <Link href={`/signin`} className=" btn">Signin</Link>
+                { authcheck ? (
+                <div>
+                  <NavbarProfile />
+                </div>
+              ) : (
+                <div>
+                  <Link href={`/signin`} className="btn">Signin</Link>
+                </div>
+              )}
               </div>
-            )}
           </div>
         </div>
       ) : (
@@ -213,56 +205,4 @@ const NavBar = () => {
   );
 };
 
-
-const NavbarProfile =  () => {
-
-  const router = useRouter();
-
-  
-  const logout = () => {
-    
-    localStorage.removeItem('token');
-    localStorage.removeItem('id');
-    localStorage.removeItem('username');
-    router.push("/signin")
-
-}
-
-
-  return (
-    <div className="dropdown dropdown-end">
-    <div
-      tabIndex={0}
-      role="button"
-      className="btn btn-ghost btn-circle avatar"
-    >
-      <div className="w-10 rounded-full">
-        <Image
-          width={50}
-          height = {50}
-          alt="Tailwind CSS Navbar component"
-          src="https://images.unsplash.com/photo-1633332755192-727a05c4013d"
-        />
-      </div>
-    </div>
-    <ul
-      tabIndex={0}
-      className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
-    >
-      <li>
-        <Link href={"/profile"} className="justify-between">
-          Profile
-          <span className="badge">New</span>
-        </Link>
-      </li>
-      <li>
-        <Link href={`/profile/mybookings`}>My Bookings</Link>
-      </li>
-      <li>
-        <a onClick={logout}>Logout</a>
-      </li>
-    </ul>
-  </div>
-  )
-}
 export default NavBar;

@@ -1,8 +1,9 @@
 "use client";
+import LoadingAlert from "@/app/utils/LoadingAlert";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-
+import Cookies from "js-cookie";
 interface StartJourneyInter {
   id: string;
 }
@@ -56,9 +57,9 @@ const StartJourney: React.FC<StartJourneyInter> = ({ id }) => {
     date: "",
   });
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-  const [totalKM, setTotalKM] = useState();
-  const [total, setTotal] = useState();
+  const [error, setError] = useState<unknown>(null);
+  const [totalKM, setTotalKM] = useState<string | number>("");
+  const [total, setTotal] = useState<number>(0);
   const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
 
   const [cabDetails, setCabDetails] = useState<Cab>();
@@ -67,7 +68,8 @@ const StartJourney: React.FC<StartJourneyInter> = ({ id }) => {
 
   const fetchBooking = async () => {
     setLoading(true);
-    const token = localStorage.getItem("token");
+    // const token = localStorage.getItem("token");
+    const token = Cookies.get('tokenC');
 
     try {
       const response = await axios.get(
@@ -82,7 +84,7 @@ const StartJourney: React.FC<StartJourneyInter> = ({ id }) => {
       console.log(response);
       console.log(response.data.driverId);
 
-      if (response.data.driverId != localStorage.getItem("id")) {
+      if (response.data.driverId != Cookies.get('idC')) {
         setError(true);
         console.log("This order not yours!");
         return;
@@ -92,14 +94,17 @@ const StartJourney: React.FC<StartJourneyInter> = ({ id }) => {
       }
 
       setLoading(false);
-    } catch (error: unknown) {
-      console.log(error);
+    } catch (error) {
+      setError(error)
     }
   };
 
+
+  
+
   const fetchCab = async (cabId: string) => {
     setLoading(true);
-    const token = localStorage.getItem("token");
+    const token = Cookies.get('tokenC');
 
     console.log(`http://localhost:3005/api/v1/cab/${cabId}`);
 
@@ -126,7 +131,10 @@ const StartJourney: React.FC<StartJourneyInter> = ({ id }) => {
 
   useEffect(() => {
     fetchBooking();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
+
+  console.log(error)
 
   const calculateTotal = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log(e.target.value);
@@ -135,21 +143,25 @@ const StartJourney: React.FC<StartJourneyInter> = ({ id }) => {
       e.target.value = "0";
     }
 
-    setTotalKM(e.target.value);
+    setTotalKM(parseFloat(e.target.value));
 
     const destination: number = parseInt(e.target.value);
-    if (destination < 7) {
-      setTotal(destination * cabDetails.avarageKmPrice);
-    } else {
-      let total99 = destination - 7;
-      setTotal(cabDetails.first7kmPrice + total99 * cabDetails.avarageKmPrice);
+    if (cabDetails) {
+      if (destination < 7) {
+        setTotal(destination * cabDetails.avarageKmPrice);
+      } else {
+        const total99 = destination - 7;
+        setTotal(cabDetails.first7kmPrice + total99 * cabDetails.avarageKmPrice);
+      }
     }
 
-    console.log(cabDetails.first7kmPrice);
+    if (cabDetails) {
+      console.log(cabDetails.first7kmPrice);
+    }
   };
 
   const updateBill = async () => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get('tokenC');
 
     const updateBookngData = {
       id: booking.id,
@@ -162,6 +174,7 @@ const StartJourney: React.FC<StartJourneyInter> = ({ id }) => {
     console.log(updateBookngData);
 
     try {
+      
       const response = await axios.patch(
         "http://localhost:3005/api/v1/booking/bill",
         updateBookngData,
@@ -190,6 +203,7 @@ const StartJourney: React.FC<StartJourneyInter> = ({ id }) => {
   return (
     <div className="w-full flex justify-center p-5">
       <div className="w-full max-w-4xl bg-base-100 shadow-xl rounded-xl p-6">
+        {loading && <LoadingAlert mzg="Bill is loading"/>}
         <h2 className="text-3xl font-bold text-primary text-center mb-4">
           Start Your Journey
         </h2>

@@ -1,0 +1,12 @@
+import { AppProps } from 'next/app';
+import { CookiesProvider } from 'next-client-cookies';
+
+function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    <CookiesProvider>
+      <Component {...pageProps} />
+    </CookiesProvider>
+  );
+}
+
+export default MyApp;

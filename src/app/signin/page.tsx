@@ -6,9 +6,12 @@ import { decodeJwt } from "../utils/JwtDecode";
 import React, { useState } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { SetCookies } from "../utils/SetCookies";
+// import { SetCookies } from "../utils/SetCookies";
+import Cookies from "js-cookie";
+import { useCookies } from 'next-client-cookies';
 
 const SignIn =  () => {
+  const cookies = useCookies();
   const router = useRouter();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -51,7 +54,9 @@ const SignIn =  () => {
       localStorage.setItem("token", sk);
       // console.log(sk)
 
-      SetCookies("token" , sk , 2);
+      // SetCookies("token" , sk , 2);
+      cookies.set("token" , sk)
+      Cookies.set("tokenC" , sk , {expires : 5})
 
       try {
 
@@ -60,10 +65,16 @@ const SignIn =  () => {
         const decode = decodeJwt(sk);
 
         localStorage.setItem("id", decode.id);
-        SetCookies("id" , decode.id , 2);
+        // SetCookies("id" , decode.id , 2);
+        cookies.set("id" , decode.id)
+        Cookies.set("idC" , decode.id , {expires : 5})
+
 
         localStorage.setItem("email", decode.email);
-        SetCookies("email" , decode.email , 2);
+        // SetCookies("email" , decode.email , 2);
+        cookies.set("email" , decode.email)
+        Cookies.set("emailC" , decode.email , {expires : 5})
+        
 
 
         if (decode.role == "ADMIN") {

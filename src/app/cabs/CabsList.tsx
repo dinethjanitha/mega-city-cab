@@ -3,7 +3,9 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-
+import LoadingAlert from '../utils/LoadingAlert';
+// import Cookies from 'js-cookie';
+import { useCookies } from 'next-client-cookies';
 interface Cab {
   id: string;
   addedDate: string;
@@ -22,18 +24,19 @@ interface Cab {
 
 const CabsList = () => {
   const router = useRouter();
-
+  const cookies = useCookies();
   const [cabs, setCabs] = useState<Cab[]>([]);
   const [searchCabs, setSearchCabs] = useState<Cab[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [search, setSearch] = useState<string>("");
+  const [error, setError] = useState<unknown>(null);
+  // const [search, setSearch] = useState<string>("");
 
   useEffect(() => {
     const fetchCabs = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem('token');
+        // const token = localStorage.getItem('token');
+        const token = cookies.get('token');
         console.log(token);
 
         const response = await axios.get("http://localhost:3005/api/v1/cabs");
@@ -42,20 +45,24 @@ const CabsList = () => {
         setCabs(response.data);
         setSearchCabs(response.data);
         setLoading(false);
-      } catch (error: unknown) {
+      } catch (error) {
         console.log(error);
         setLoading(false);
+        setError(error)
       }
     };
 
     fetchCabs();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  console.log(error)
 
   console.log(cabs);
 
   const handlesearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const typing = e.target.value;
-    setSearch(typing);
+    // setSearch(typing);
 
     if (typing !== "") {
       const cabsforSearch = cabs;
@@ -99,6 +106,9 @@ const CabsList = () => {
         />
       </div>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full p-3">
+        {
+          loading && <LoadingAlert mzg='Cab is loading...'/>
+        }
         {searchCabs.length >= 1 ? (
           searchCabs.map((cab, index) => (
             <div key={index} className="card bg-white shadow-lg rounded-lg overflow-hidden">

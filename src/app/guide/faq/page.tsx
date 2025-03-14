@@ -47,9 +47,7 @@ const HowtoPlaceBooking = () => {
                     </ul>
                 </div>
               </div>
-            </div>
-
-           
+            </div>           
       </div>  
     </div>
   )

@@ -1,17 +1,38 @@
 "use client";
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import React, { useState } from 'react';
 import Image from 'next/image';
+// import Cookies from 'js-cookie';
+import { useCookies } from 'next-client-cookies';
+interface FormData {
+  cabName: string;
+  driverid: string | null;
+  status: string;
+  driverlicence: string;
+  description: string;
+  cabOwnerName: string;
+  phoneNumber: string;
+  sheetCount: number;
+  first7kmPrice: number;
+  avarageKmPrice: number;
+  image: File | null;
+}
+
+interface ErrorResponse {
+  message: string;
+}
 
 const AddCabs = () => {
- 
-    const userid = localStorage.getItem("id");
-    const token = localStorage.getItem("token");
 
+    const cookies = useCookies();
+  
 
-  const [formData, setFormData] = useState({
+  const userid = cookies.get('id');
+  const token = cookies.get('token');
+
+  const [formData, setFormData] = useState<FormData>({
     cabName: "",
-    driverid: userid,
+    driverid: userid || null,
     status: "available",
     driverlicence: "",
     description: "",
@@ -20,14 +41,14 @@ const AddCabs = () => {
     sheetCount: 0,
     first7kmPrice: 0.00,
     avarageKmPrice: 0.00,
-    image: null as File | null
+    image: null
   });
 
   const [loading, setLoading] = useState<boolean>(false);
   const [addSuccess, setAddSuccess] = useState<boolean>(false);
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -54,49 +75,44 @@ const AddCabs = () => {
     console.log(updatedFormData);
 
     try {
-      
       setError(null);
       setLoading(true);
       setAddSuccess(false);
 
-    //   const formDataToSend = new FormData();
-    //   formDataToSend.append("cabName", updatedFormData.cabName);
-    //   formDataToSend.append("driverid", updatedFormData.driverid || "");
-    //   formDataToSend.append("status", updatedFormData.status);
-    //   formDataToSend.append("description", updatedFormData.description);
-    //   formDataToSend.append("cabOwnerName", updatedFormData.cabOwnerName);
-    //   formDataToSend.append("phoneNumber", updatedFormData.phoneNumber);
-    //   formDataToSend.append("first7kmPrice", updatedFormData.first7kmPrice.toString());
-    //   formDataToSend.append("avarageKmPrice", updatedFormData.avarageKmPrice.toString());
-    //   if (updatedFormData.image) {
-    //     formDataToSend.append("image", updatedFormData.image);
-    //   }
+      const formDataToSend = new FormData();
+      formDataToSend.append("cabName", updatedFormData.cabName);
+      formDataToSend.append("driverid", updatedFormData.driverid || "");
+      formDataToSend.append("status", updatedFormData.status);
+      formDataToSend.append("description", updatedFormData.description);
+      formDataToSend.append("cabOwnerName", updatedFormData.cabOwnerName);
+      formDataToSend.append("phoneNumber", updatedFormData.phoneNumber);
+      formDataToSend.append("first7kmPrice", updatedFormData.first7kmPrice.toString());
+      formDataToSend.append("avarageKmPrice", updatedFormData.avarageKmPrice.toString());
+      if (updatedFormData.image) {
+        formDataToSend.append("image", updatedFormData.image);
+      }
 
-      const response = await axios.post("http://localhost:3005/api/v1/cabs", updatedFormData, {
+      const response = await axios.post("http://localhost:3005/api/v1/cabs", formDataToSend, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
 
-    //   setFormData((preData) => ({
-    //     ...preData,
-    //     phoneNumber : ""
-    //   }))
-
       setLoading(false);
       setAddSuccess(true);
       console.log(response);
     } catch (e) {
-        if (axios.isAxiosError(e) && e.response?.data != null) {
-            console.log(e);
-            setError(e.response.data);
-        }else{
-            setError(e.message)
-            console.log(e)
-        
+      if (axios.isAxiosError(e)) {
+        const axiosError = e as AxiosError<ErrorResponse>;
+        if (axiosError.response?.data) {
+          setError(axiosError.response.data.message);
+        } else {
+          setError(axiosError.message);
         }
-      
+      } else {
+        setError((e as Error).message);
+      }
       setLoading(false);
     }
   };
@@ -122,21 +138,21 @@ const AddCabs = () => {
               </div>
             )}
 
-            {error != null && (
-             <div role="alert" className="alert alert-error">
+            {error && (
+              <div role="alert" className="alert alert-error">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span>{error}</span>
-            </div>
-            )}      
+              </div>
+            )}
           </div>
 
           <h2 className='text-5xl'>Add Cab</h2>
 
           <input type="text" name='cabName' onChange={handleChange} placeholder="Cab Name" className="input w-full" required />
 
-          <input type="number" className="input validator w-full" name='sheetCount' onChange={handleChange} required placeholder="Enter Sheet Count" 
+          <input type="number" className="input validator w-full" name='sheetCount' onChange={handleChange} required placeholder="Enter Sheet Count"
             min="1" max="10" title="Must be between be 1 to 10" />
           <p className=" hidden mt-0 validator-hint">Must be between be 1 to 10</p>
 

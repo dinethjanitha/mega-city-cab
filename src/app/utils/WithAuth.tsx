@@ -1,26 +1,27 @@
-"use client"
-import { useRouter } from 'next/navigation'
-import React, { useEffect } from 'react'
+"use client";
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import IsAuth from './IsAuth';
 
-const WithAuth = (WrappedComponent: React.ComponentType) => {
-  const Wapper = (props: React.JSX.IntrinsicAttributes) => {
+const WithAuth = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
+  const Wrapper: React.FC<P> = (props) => {
     const router = useRouter();
+    const isAuthenticated = IsAuth();
 
     useEffect(() => {
-        if(!IsAuth()){
-            router.push("/signin");
-        }
-    }, [])
+      if (!isAuthenticated) {
+        router.push("/signin");
+      }
+    }, [isAuthenticated, router]);
 
-    if(!IsAuth()){
-        return null;
+    if (!isAuthenticated) {
+      return null;
     }
-    return <WrappedComponent {...props}/>
-  }
 
-  return Wapper;
+    return <WrappedComponent {...props} />;
+  };
 
+  return Wrapper;
 };
 
 export default WithAuth;

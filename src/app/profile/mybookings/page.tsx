@@ -1,9 +1,10 @@
 "use client";
+import LoadingAlert from "@/app/utils/LoadingAlert";
 import SuccessAlert from "@/app/utils/SuccessAlert";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-
+import { useCookies } from "next-client-cookies";
 interface Booking {
   id: string;
   userId: string;
@@ -21,7 +22,9 @@ interface Booking {
 }
 
 const UserBookings = () => {
-  const userId = localStorage.getItem("id");
+  const cookies = useCookies();
+  // const userId = localStorage.getItem("id");
+  const userId = cookies.get('id')?.toString();
 
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -35,7 +38,9 @@ const UserBookings = () => {
 
   const fetchUserBookings = async () => {
     try {
-      const token = localStorage.getItem("token");
+      setLoading(true)
+      // const token = localStorage.getItem('token');
+      const token = cookies.get('token')?.toString();
       const response = await axios.get(
         `http://localhost:3005/api/v1/booking/user/${userId}`,
         {
@@ -46,9 +51,9 @@ const UserBookings = () => {
       );
 
       console.log(response.data);
-      setBookings(response.data.sort((a, b) => new Date(b.date) - new Date(a.date)));
-      setAllBooking(response.data.sort((a, b) => new Date(b.date) - new Date(a.date)))
-
+      setBookings(response.data.sort((a: Booking, b: Booking) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+      setAllBooking(response.data.sort((a: Booking, b: Booking) => new Date(b.date).getTime() - new Date(a.date).getTime()))
+      setLoading(false)
       
     } catch (e) {
       console.log(e);
@@ -57,7 +62,8 @@ const UserBookings = () => {
 
   useEffect(() => {
     fetchUserBookings();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -82,7 +88,7 @@ const UserBookings = () => {
     console.log(updatedData)
 
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.get('tokenC');
       console.log("-----update------")
     console.log(updatedData)
       const response = await axios.patch(
@@ -165,12 +171,15 @@ const UserBookings = () => {
   }
 
   console.log(selectedBooking);
-  if (loading) return <div>Loading...</div>;
+  
 
   return (
     <div className="w-screen">
       <div className="mx-auto grid max-w-screen-lg px-6 pb-20">
         <h1 className="text-3xl font-bold mb-6 text-center">Your Bookings</h1>
+        {
+          loading && <LoadingAlert mzg="Your booking is loading..."/>
+        }
         {error && (
           <div role="alert" className="alert alert-error my-3">
             <svg

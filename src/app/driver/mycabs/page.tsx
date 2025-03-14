@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 interface Cab{
     
@@ -30,8 +31,10 @@ const MyCab = () => {
     
 
     const fetchCab = async () => {
-        const token = localStorage.getItem('token');
-        const userid = localStorage.getItem('id');
+        const token = Cookies.get('tokenC');
+        const userid = Cookies.get('idC');
+        // const token = localStorage.getItem('token');
+        // const userid = localStorage.getItem('id');
         try{
             const response = await axios.get(`http://localhost:3005/api/v1/cab/dirver/${userid}` , {
                 headers : {

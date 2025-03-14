@@ -2,7 +2,8 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-
+import Cookies from "js-cookie";
+import { useCookies } from 'next-client-cookies';
 interface Booking {
   id: string;
   userId: string;
@@ -18,7 +19,11 @@ interface Booking {
 }
 
 const BookingDetails = () => {
-  const driverId = localStorage.getItem("id");
+  // const driverId = localStorage.getItem("id");
+
+  const cookies = useCookies();
+
+  const driverId = cookies.get('id')?.toString();
 
   const [bookings, setBookings] = useState<Booking[]>([]);
   // const [loading, setLoading] = useState<boolean>(false);
@@ -26,8 +31,11 @@ const BookingDetails = () => {
   const router = useRouter();
 
   const fetchDriverBookings = async () => {
+    // const token = localStorage.getItem("token");
+    // const token = Cookies.get('tokenC')?.toString();
+    const token = cookies.get('token')?.toString();
     try {
-      const token = localStorage.getItem("token");
+      
       const response = await axios.get(
         `http://localhost:3005/api/v1/bookings/driver/${driverId}`,
         {
@@ -48,6 +56,7 @@ const BookingDetails = () => {
 
   useEffect(() => {
     fetchDriverBookings();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const formatDate = (dateString: string) => {
@@ -62,7 +71,8 @@ const BookingDetails = () => {
       bookingStatus: "confirm",
     };
     try {
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = Cookies.get('tokenC');
       const response = await axios.patch(
         "http://localhost:3005/api/v1/booking",
         updatedData,
@@ -87,7 +97,8 @@ const BookingDetails = () => {
       bookingStatus: "cancel",
     };
     try {
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = Cookies.get('tokenC');
       const response = await axios.patch(
         "http://localhost:3005/api/v1/booking",
         updatedData,

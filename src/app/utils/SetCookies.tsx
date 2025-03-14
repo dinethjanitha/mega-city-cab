@@ -6,7 +6,7 @@ export const SetCookies = async (name:string , value:string ,exptime:number) => 
     const cookiesAccess = await cookies();
 
     cookiesAccess.set(name , value , {
-   
+        expires : exptime
     })
 
     console.log("cookie set done")

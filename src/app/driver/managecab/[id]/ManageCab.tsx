@@ -5,7 +5,7 @@ import Image from 'next/image';
 import SuccessAlert from '@/app/utils/SuccessAlert';
 import LoadingAlert from '@/app/utils/LoadingAlert';
 import { useRouter } from 'next/navigation';
-
+import Cookies from 'js-cookie';
 interface Cab{
     id: string;
     addedDate: string;
@@ -57,6 +57,7 @@ const ManageCab : React.FC<Props> = ({ id }) => {
 
     useEffect(() => {
         fetchCab();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +82,8 @@ const ManageCab : React.FC<Props> = ({ id }) => {
         }
 
         setLoading(true)
-        const token = localStorage.getItem('token');
+        // const token = localStorage.getItem('token');
+        const token = Cookies.get('tokenC');
         try{
             const response = await axios.patch("http://localhost:3005/api/v1/cab" , updatedCabDetails , {
                 headers : {
@@ -102,7 +104,7 @@ const ManageCab : React.FC<Props> = ({ id }) => {
     console.log(cab)
 
     const deleteCab = async () => {
-      const token = localStorage.getItem('token');
+      const token = Cookies.get('tokenC');
       try{
         const response = await axios.delete(`http://localhost:3005/api/v1/cab/${cab?.id}` , {
           headers : {

@@ -1,8 +1,8 @@
 "use client";
-import WithAuth from "@/app/utils/WithAuth";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-
+// import Cookies from "js-cookie";
+import { useCookies } from "next-client-cookies";
 interface User {
   id: string;
   name: string;
@@ -15,9 +15,11 @@ interface User {
   role: string;
 }
 
-const ManageUsers = () => {
+const ManageUsers: React.FC = () => {
+
+  const cookies = useCookies();
+
   const [users, setUsers] = useState<User[] | null>(null);
-  const [editUserId, setEditUserId] = useState<string | null>(null);
   const [formData, setFormData] = useState<User>({
     id: "",
     name: "",
@@ -33,10 +35,8 @@ const ManageUsers = () => {
   const [searchData, setSearchData] = useState<User[] | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [searchValue, setSearchValue] = useState<string | null>(null);
 
   const handleEditButton = (user: User) => {
-    setEditUserId(user.id);
     setFormData({
       id: user.id,
       name: user.name,
@@ -61,9 +61,9 @@ const ManageUsers = () => {
 
   const handleSaveButton = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("-------------");
     try {
-      const token = localStorage.getItem("token");
+      // const token = localStorage.getItem("token");
+      const token = cookies.get('token')?.toString();
       const response = await axios.put(
         "http://localhost:3005/api/v1/user",
         formData,
@@ -74,28 +74,27 @@ const ManageUsers = () => {
         }
       );
 
-      console.log(response);
+      console.log(response)
       if (users) {
         setUsers(
           users.map((user) => (user.id === formData.id ? formData : user))
         );
       }
-      setEditUserId(null);
+
       setShowModal(false);
       setSuccessMessage("User updated successfully!");
-      fetchUsers()
+      fetchUsers();
       setTimeout(() => setSuccessMessage(""), 3000); // Hide the success message after 3 seconds
     } catch (e: unknown) {
       console.log(e);
     }
   };
 
-
-
   const fetchUsers = async () => {
     try {
-      const token = localStorage.getItem("token"); // Retrieve the token from localStorage
-      console.log(`Bearer ${token}`);
+      // const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+      const token = cookies.get('token')?.toString();
+      // Retrieve the token from localStorage
       const response = await axios.get("http://localhost:3005/api/v1/users", {
         headers: {
           Authorization: `Bearer ${token}`, // Add the Bearer token to the request headers
@@ -108,47 +107,39 @@ const ManageUsers = () => {
     }
   };
 
-
-
   useEffect(() => {
-    
-  
     fetchUsers();
   }, []);
 
-  console.log(users);
-  console.log(formData);
-
-  const searchUser = (e:React.ChangeEvent<HTMLInputElement>) => {
+  const searchUser = (e: React.ChangeEvent<HTMLInputElement>) => {
     const typing = e.target.value;
 
-    setSearchValue(typing);
-
-
-   
-    if(typing != ""){
+    if (typing !== "") {
       const data = users?.filter((user) => {
-        if(user.id.indexOf(typing) != -1 
-        || user.email.indexOf(typing) != -1 || user.role.indexOf(typing.toString()) != -1 || 
-        user.nic.indexOf(typing.toString()) != -1){
-          return user
+        if (
+          user.id.includes(typing) ||
+          user.email.includes(typing) ||
+          user.role.includes(typing) ||
+          user.nic.includes(typing)
+        ) {
+          return user;
         }
-      })
+      });
 
-      setSearchData(data)
-    }else{
+      setSearchData(data || null);
+    } else {
       setSearchData(users);
     }
-    
-  }
+  };
 
-  // 67c88d753557a974a5bcd871
+  
+ 
 
   return (
     <div className="p-10">
       <div className="overflow-x-auto">
         <h2 className=" text-2xl my-3">User Details</h2>
-        <label className="input m-3" >
+        <label className="input m-3">
           <svg
             className="h-[1em] opacity-50"
             xmlns="http://www.w3.org/2000/svg"
@@ -165,7 +156,12 @@ const ManageUsers = () => {
               <path d="m21 21-4.3-4.3"></path>
             </g>
           </svg>
-          <input type="search" required onChange={searchUser} placeholder="Search" />
+          <input
+            type="search"
+            required
+            onChange={searchUser}
+            placeholder="Search"
+          />
         </label>
         <table className="table w-full">
           <thead>
@@ -176,60 +172,58 @@ const ManageUsers = () => {
               <th>Username</th>
               <th>Email</th>
               <th>Password</th>
-              <th>Gender</th>              
+              <th>Gender</th>
               <th>Address</th>
               <th>Type</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            { searchData == null ? (
-              users?.map((user, index) => (
-                <tr key={user.id}>
-                  <th>{user.id}</th>
-                  <td>{user.nic}</td>
-                  <td>{user.name}</td>
-                  <td>{user.username}</td>
-                  <td>{user.email}</td>
-                  <td>{user.password}</td>
-                  <td>{user.gender}</td>
-                  <td>{user.address}</td>
-                  <td>{user.role}</td>
-                  <td className="flex flex-row gap-2">
-                    <button
-                      className="btn btn-success"
-                      onClick={() => handleEditButton(user)}
-                    >
-                      Edit
-                    </button>
-                    <button className="btn btn-primary">Delete</button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              searchData?.map((user) => (
-                <tr key={user.id}>
-                  <th>{user.id}</th>
-                  <td>{user.nic}</td>
-                  <td>{user.name}</td>
-                  <td>{user.username}</td>
-                  <td>{user.email}</td>
-                  <td>{user.password}</td>
-                  <td>{user.gender}</td>
-                  <td>{user.address}</td>
-                  <td>{user.role}</td>
-                  <td className="flex flex-row gap-2">
-                    <button
-                      className="btn btn-success"
-                      onClick={() => handleEditButton(user)}
-                    >
-                      Edit
-                    </button>
-                    <button className="btn btn-primary">Delete</button>
-                  </td>
-                </tr>
-              ))
-            )}
+            {searchData == null
+              ? users?.map((user) => (
+                  <tr key={user.id}>
+                    <th>{user.id}</th>
+                    <td>{user.nic}</td>
+                    <td>{user.name}</td>
+                    <td>{user.username}</td>
+                    <td>{user.email}</td>
+                    <td>{user.password}</td>
+                    <td>{user.gender}</td>
+                    <td>{user.address}</td>
+                    <td>{user.role}</td>
+                    <td className="flex flex-row gap-2">
+                      <button
+                        className="btn btn-success"
+                        onClick={() => handleEditButton(user)}
+                      >
+                        Edit
+                      </button>
+                      <button className="btn btn-primary">Delete</button>
+                    </td>
+                  </tr>
+                ))
+              : searchData?.map((user) => (
+                  <tr key={user.id}>
+                    <th>{user.id}</th>
+                    <td>{user.nic}</td>
+                    <td>{user.name}</td>
+                    <td>{user.username}</td>
+                    <td>{user.email}</td>
+                    <td>{user.password}</td>
+                    <td>{user.gender}</td>
+                    <td>{user.address}</td>
+                    <td>{user.role}</td>
+                    <td className="flex flex-row gap-2">
+                      <button
+                        className="btn btn-success"
+                        onClick={() => handleEditButton(user)}
+                      >
+                        Edit
+                      </button>
+                      <button className="btn btn-primary">Delete</button>
+                    </td>
+                  </tr>
+                ))}
           </tbody>
         </table>
       </div>
@@ -368,4 +362,4 @@ const ManageUsers = () => {
   );
 };
 
-export default WithAuth(ManageUsers);
+export default ManageUsers;
