@@ -12,7 +12,7 @@ import IsAuth from "@/app/utils/IsAuth";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 // import Cookies from "js-cookie";
-import { useCookies } from "next-client-cookies";
+// import { useCookies } from "next-client-cookies";
 
 interface BookCabProps {
   cabid: string;
@@ -46,7 +46,7 @@ const BookCab: React.FC<BookCabProps> = ({ cabid }) => {
   const userid = localStorage.getItem("id");
 
 
-  const cookies = useCookies();
+  // const cookies = useCookies();
   useEffect(() => {
     const fetchCab = async () => {
       try {
@@ -176,8 +176,8 @@ const BookCab: React.FC<BookCabProps> = ({ cabid }) => {
       try {
         console.log("-----------runingggg")
         setLoading(true)
-        // const token = localStorage.getItem("token");
-        const token = cookies.get('token');
+        const token = localStorage.getItem("token");
+        // const token = cookies.get('token');
         const response = await axios.post(
           "http://localhost:3005/api/v1/booking",
           updatedBookingData,

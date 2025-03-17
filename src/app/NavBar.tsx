@@ -8,12 +8,13 @@ import dynamic from "next/dynamic";
 // import IsAuth from "./utils/IsAuth";
 import { decodeJwt } from "./utils/JwtDecode";
 import { useCookies } from "next-client-cookies";
+import IsAuth from "./utils/IsAuth";
 
 const NavbarProfile = dynamic(() => import("./NavbarProfile"), { ssr: false });
 
 const NavBar = () => {
   const cookies = useCookies();
-  // const auth = IsAuth() || false;
+  const auth = IsAuth();
   const pathName = usePathname();
 
 
@@ -186,7 +187,7 @@ const NavBar = () => {
           </div>
           <div className="navbar-end">
               <div>
-                { authcheck ? (
+                { auth ? (
                 <div>
                   <NavbarProfile />
                 </div>

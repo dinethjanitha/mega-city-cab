@@ -62,8 +62,8 @@ const ManageUsers: React.FC = () => {
   const handleSaveButton = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // const token = localStorage.getItem("token");
-      const token = cookies.get('token')?.toString();
+      const token = localStorage.getItem("token");
+      // const token = cookies.get('token')?.toString();
       const response = await axios.put(
         "http://localhost:3005/api/v1/user",
         formData,
@@ -109,6 +109,7 @@ const ManageUsers: React.FC = () => {
 
   useEffect(() => {
     fetchUsers();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const searchUser = (e: React.ChangeEvent<HTMLInputElement>) => {

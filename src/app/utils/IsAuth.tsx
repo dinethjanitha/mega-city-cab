@@ -1,20 +1,22 @@
 "use client"
 import { jwtDecode } from 'jwt-decode'
-// import { GetCookies } from './GetCookies';
-// import Cookies from 'js-cookie';
-
+import { useEffect, useState } from 'react';
 
 const IsAuth = () => {
 
-    // const token = GetCookies('token');
-    // const newToken = Cookies.get('tokenC')
-    // console.log(newToken)
-    const token = localStorage.getItem('token');
-    // const token =  Cookies.get('tokenC')?.toString();
+    const [token , setToken] = useState<string | null>(null);
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        setToken(token);
+    },[])
 
     if(!token){
         return false
     }
+
+    console.log("token")
+    console.log(token)
 
     try{
         const decode = jwtDecode(token);

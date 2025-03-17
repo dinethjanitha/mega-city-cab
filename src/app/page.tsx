@@ -31,7 +31,7 @@ export default function Home() {
       <div className="hero  min-h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <Image
-            
+             
             src={back3}
             alt="Background image"
             className=" w-[1000px] rounded-lg "
